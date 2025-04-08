@@ -12,6 +12,8 @@ class FunctionComplexity:
     func_name: str
     filepath: str
     complexity: int
+    line_begin: int
+    line_end: int
 
 
 @dataclass
@@ -39,7 +41,9 @@ def analyze_file(filepath: str, max_complexity: int, regex_patterns: list[str]) 
         if function.cyclomatic_complexity > max_complexity and function_name_matches_any_regex(
             function.name, function_regexes
         ):
-            func_comp = FunctionComplexity(function.name, filepath, function.cyclomatic_complexity)
+            func_comp = FunctionComplexity(
+                function.name, filepath, function.cyclomatic_complexity, function.start_line, function.end_line
+            )
             analyze_result.problematic_functions.append(func_comp)
 
     return analyze_result
@@ -73,6 +77,9 @@ def main():
         "-r", "--regex", nargs="+", type=str, default=[r".*"], help="List of regex patterns for functions to analyze"
     )
     parser.add_argument("-e", "--extensions", nargs="+", type=str, default=[], help="File extensions to analyze")
+    parser.add_argument(
+        "-i", "--include-lines", action="store_true", help="Include lines in which function begins/ends"
+    )
     args = parser.parse_args()
 
     if args.file:
@@ -82,8 +89,12 @@ def main():
             args.directory, args.max_complexity, args.regex, args.extensions
         ).problematic_functions
 
-    for r in result:
-        print(f"{r.filepath} {r.func_name} {r.complexity}")
+    if args.include_lines:
+        for r in result:
+            print(f"{r.filepath} {r.func_name} {r.complexity} {r.line_begin} {r.line_end}")
+    else:
+        for r in result:
+            print(f"{r.filepath} {r.func_name} {r.complexity}")
 
 
 if __name__ == "__main__":

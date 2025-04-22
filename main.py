@@ -5,7 +5,11 @@ import re
 from dataclasses import dataclass
 
 import lizard
+import requests
+from dotenv import load_dotenv
+from openai import AzureOpenAI
 
+load_dotenv()
 
 @dataclass
 class FunctionComplexity:
@@ -63,6 +67,68 @@ def analyze_directory(
                 )
 
     return analyze_result
+
+#detect a programming language of a given file
+def detect_language(filepath: str) -> str:
+    ext_to_language = {
+    '.c': 'C/C++', '.cpp': 'C/C++', '.cc': 'C/C++', '.h': 'C/C++', '.hpp': 'C/C++','.java': 'Java', '.cs': 'C#', '.js': 'JavaScript', '.ts': 'TypeScript', '.vue': 'VueJS',
+    '.m': 'Objective-C', '.swift': 'Swift', '.py': 'Python', '.rb': 'Ruby','.ttcn3': 'TTCN-3', '.php': 'PHP', '.scala': 'Scala', '.gd': 'GDScript',
+    '.go': 'Golang', '.lua': 'Lua', '.rs': 'Rust', '.f90': 'Fortran', '.f95': 'Fortran','.kt': 'Kotlin', '.sol': 'Solidity', '.erl': 'Erlang', '.zig': 'Zig', '.pl': 'Perl'
+    }
+    ext = pathlib.Path(filepath).suffix
+    return ext_to_language.get(ext)
+
+#extract a given function of code from file
+def extract_function_code(filepath: str, start_line: int, end_line: int) -> str:
+    with open(filepath, "r", encoding="utf-8") as f:
+        lines = f.readlines()
+    return ''.join(lines[start_line - 1:end_line])
+
+#connect to AzureOpenAI for code optimazation
+def getResponseFromAzureAI(file_data):
+
+    azure_endpoint = os.getenv("azure_endpoint")  
+    azure_deployment = os.getenv("azure_deployment")  
+    api_key = os.getenv("azure_openai_api_key")
+    api_version = os.getenv("azure_api_version")
+
+    client = AzureOpenAI( 
+        api_key = api_key, 
+        api_version = api_version,
+        azure_endpoint = azure_endpoint 
+    )
+
+    language = detect_language(file_data.filepath)
+    if not language:
+        raise ValueError(f"Unsupported file extension: {file_data.filepath}")
+    func_code = extract_function_code(file_data.filepath, file_data.line_begin, file_data.line_end)
+    
+    prompt = (
+    
+        f"Here is a function written in {language}. Please analyze and suggest possible improvements in:\n"
+        f"- performance\n- readability\n- security\n- maintainability\n - complexity\n"
+        f"Also explain the reasoning behind each recommendation.\n\n"
+        f"Time Complexity of code: {file_data.complexity}\n\n"
+        f"Function code:\n{func_code}"
+        
+    )
+
+    response = client.chat.completions.create(
+        model = azure_deployment,
+        messages = [
+           
+            {"role": "system", "content": "You are a senior software engineer skilled in refactoring and optimizing code."},
+            {"role": "user", "content": prompt}
+        ],
+        max_tokens=800,  
+        temperature=0.7,  
+        top_p=0.95,  
+        frequency_penalty=0,  
+        presence_penalty=0,
+    )
+    return response.choices[0].message.content
+
+
 
 
 def main():

@@ -1,1 +1,8 @@
 .venv
+*.key
+*.pem
+.env
+config/credentials.yml.enc
+secrets/
+node_modules/
+vendor/

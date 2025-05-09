@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, filedialog, scrolledtext, messagebox
 import os
-import optima_backend  # import the backend 
+import optima_backend  
 
 class OptimaConfigurator(tk.Tk):
     def __init__(self, test_mode=False):
@@ -11,6 +11,9 @@ class OptimaConfigurator(tk.Tk):
             self.withdraw()
         self.title("Optima - Complexity Analyzer Configuration")
         self.geometry("600x550")
+        
+        # dark theme basic colors
+        self.configure(bg="black")
         
         # --- variables ---
         self.analysis_scope = tk.StringVar(value="file")  
@@ -80,6 +83,8 @@ class OptimaConfigurator(tk.Tk):
         self.regex_text = scrolledtext.ScrolledText(params_frame, height=5, width=60)
         self.regex_text.grid(row=2, column=0, columnspan=3, padx=5, pady=5, sticky="ew")
         self.regex_text.insert(tk.END, ".*")  
+        # Set dark colors for this text widget
+        self.regex_text.config(bg="black", fg="white", insertbackground="white")
         
         ttk.Label(params_frame, text="File Extensions (comma-separated, e.g., .py,.java):").grid(
             row=3, column=0, padx=5, pady=5, sticky="w"
@@ -113,6 +118,8 @@ class OptimaConfigurator(tk.Tk):
         self.output_text = scrolledtext.ScrolledText(
             output_frame, height=10, state=tk.DISABLED, wrap=tk.WORD
         )  # read-only, word wrap
+        # Set dark colors for this text widget
+        self.output_text.config(bg="black", fg="white", insertbackground="white")
         self.output_text.pack(fill=tk.BOTH, expand=True)
         
         # store output for testing

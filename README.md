@@ -50,6 +50,4 @@ Implements dark-themed text UI and inline input validation
 Ensure optima_backend.py is present in the project root. Then run:
 
 bash
-Kopiuj
-Edytuj
 python optima_gui.py

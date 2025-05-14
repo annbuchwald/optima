@@ -3,6 +3,7 @@ import json
 import time
 from dotenv import load_dotenv, find_dotenv
 from tenacity import retry, wait_exponential, stop_after_attempt, retry_if_exception_type
+from static_code_analyzer import *
 import logging
 
 # Set up logging
@@ -15,6 +16,7 @@ from langchain_community.vectorstores import AzureSearch
 from langchain_openai import AzureChatOpenAI
 from langchain.chains import RetrievalQA
 from langchain.prompts import PromptTemplate
+from openai import AzureOpenAI
 
 @retry(
     wait=wait_exponential(multiplier=1, min=2, max=30),
@@ -97,9 +99,12 @@ def test_embedding_model(embedding_model):
         logger.error(f"Exception when testing embedding model: {str(e)}")
         return False
 
+def getRespondFromAzureAI(user_question, ):
+    pass
+
 def main():
     try:
-        # Configuration settings
+        # Configuration settingss
         logger.info("Loading environment variables...")
         env_path = find_dotenv(usecwd=True)
         if env_path:
@@ -116,6 +121,7 @@ def main():
         chat_azure_endpoint = os.getenv("CHAT_AZURE_OAI_ENDPOINT")
         chat_azure_key = os.getenv("CHAT_AZURE_OAI_KEY")
         chat_azure_deployment = os.getenv("CHAT_AZURE_OAI_DEPLOYMENT")
+
         
         # Embedding model configuration
         embedding_azure_endpoint = os.getenv("EMBEDDING_AZURE_OAI_ENDPOINT")
@@ -161,7 +167,11 @@ def main():
         """
         
         # Get user question
-        user_question = input('\nEnter your function optimization question:\n')
+        # user_question = input('\nEnter your function optimization question:\n')
+
+        user_question = getAnalyzedCode()
+
+
         
         logger.info("Initializing embedding model...")
         # Initialize embedding model with its own endpoint and key
@@ -256,6 +266,7 @@ def main():
                 
     except ValueError as ve:
         logger.error(f"Value error: {ve}")
+
     except Exception as ex:
         logger.error(f"An error occurred: {ex}")
         logger.error(f"Error type: {type(ex).__name__}")

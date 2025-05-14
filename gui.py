@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, filedialog, scrolledtext, messagebox
 import os
-import optima_backend  # import the backend 
+import optima_backend  # import the backend
 
 class OptimaConfigurator(tk.Tk):
     def __init__(self, test_mode=False):
@@ -207,7 +207,7 @@ class OptimaConfigurator(tk.Tk):
                 for ext in extensions_str.split(",") if ext.strip()
             ]
         
-        # --- clear output and run analysis ---
+        # --- clear output and run analysis ---d
         if hasattr(self, 'output_text') and self.output_text.winfo_exists():
             self.output_text.config(state=tk.NORMAL)
             self.output_text.delete("1.0", tk.END)

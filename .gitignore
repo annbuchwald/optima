@@ -6,3 +6,4 @@ config/credentials.yml.enc
 secrets/
 node_modules/
 vendor/
+/.idea/

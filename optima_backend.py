@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 # Updated imports using langchain_openai instead of langchain_community
 from langchain_openai import AzureOpenAIEmbeddings
-from langchain_community.vectorstores import AzureSearch
+from langchain.vectorstores import AzureSearch
 from langchain_openai import AzureChatOpenAI
 from langchain.chains import RetrievalQA
 from langchain.prompts import PromptTemplate

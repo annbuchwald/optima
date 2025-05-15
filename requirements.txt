@@ -3,9 +3,11 @@ ruff==0.11.3
 openai==1.76.0
 dotenv~=0.9.9
 python-dotenv~=1.1.0
-langchain>=0.1.0
-langchain-openai>=0.0.5
-langchain-community>=0.0.13
+pydantic==2.11.4
+langchain==0.3.25
+langchain-core==0.3.60
+langchain-community==0.3.24
+langchain-openai==0.3.17
 azure-search-documents>=11.4.0
 azure-identity>=1.12.0
 tenacity>=8.2.2

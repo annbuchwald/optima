@@ -285,7 +285,8 @@ class OptimaConfigurator(tk.Tk):
             self._display_output("-" * 20)
             self._display_output("Analysis complete.")
             self._display_output("-" * 20)
-            self._display_output(f"AI Suggestions:\n{optima_backend.handle_user_question(question)}")
+            #self._display_output(f"AI Suggestions:\n{optima_backend.handle_user_question(question)}")
+            self._display_output(f"AI Suggestions:\n{optima_backend.getResponseFromAzureAI(question)}")
 
         except Exception as e:
             error_message = f"An unexpected error occurred during analysis: {e}"
